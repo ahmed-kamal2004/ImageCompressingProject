@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from scipy.fftpack import dct, idct
+from scipy.fftpack import dct, idct , dctn, idctn
 import matplotlib.pyplot as plt
 from math import log10
 import matplotlib.pyplot as plt
@@ -64,7 +64,8 @@ class BlkOperations:
         param1 : 2d ndarray of shape (x,x)
         returns : De-compressed 2d ndarray of shape (x,x)
         """
-        return idct(idct(matrix.T,norm = "ortho").T,norm = "ortho")
+        # return idct(idct(matrix.T,norm = "ortho").T,norm = "ortho")
+        return idctn(matrix , norm = "ortho")
 
     @staticmethod
     def enCompress(matrix,m): 
@@ -74,7 +75,8 @@ class BlkOperations:
         param2 : integer
         returns : Compressed 2d ndarray of shape (m,m) 
         """
-        return dct(dct(matrix.T,norm = "ortho").T,norm = "ortho")[0:m,0:m]
+        # return dct(dct(matrix.T,norm = "ortho").T,norm = "ortho")[0:m,0:m]
+        return dctn(matrix , norm = "ortho")[:m,:m]
 
 
 class OutputController:
