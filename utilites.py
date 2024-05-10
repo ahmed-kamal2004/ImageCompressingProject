@@ -3,9 +3,8 @@ import cv2
 from scipy.fftpack import dct, idct , dctn, idctn
 import matplotlib.pyplot as plt
 from math import log10
-import matplotlib.pyplot as plt
-
-
+import sys
+import os
 class Simulator:
     @staticmethod 
     def startSim(img,m,blockSize):
@@ -83,28 +82,19 @@ class OutputController:
 
     @staticmethod
     def mainController(original,compressed,decompressed,m):
-        print(f""" At m = {m}\nOriginal Matrix size is {original.shape[0]} {original.shape[1]} {original.shape[2]}\n
-Compressed Matrix size is {compressed.shape[0]} {compressed.shape[1]} {compressed.shape[2]}\n
-Decompressed Matrix size is {decompressed.shape[0]} {decompressed.shape[1]} {decompressed.shape[2]}\n
-              """)
         PSNR = OutputController.psnrCalc(original,decompressed)
-        print(f" PSNR Rate is {PSNR}")
-
-        cv2.imwrite(f"Compressed_{m}_.jpg",compressed)
-        cv2.imwrite(f"DeCompressed_{m}_.jpg",decompressed)
-
-        return PSNR
+        cv2.imwrite(f"Compressed_{m}_.png",compressed)
+        cv2.imwrite(f"DeCompressed_{m}_.png",decompressed)
+        orig = os.path.getsize("image1.png")/(1024**2)
+        comp = os.path.getsize(f"Compressed_{m}_.png")/(1024**2)
+        decomp = os.path.getsize(f"DeCompressed_{m}_.png")/(1024**2)
+        return PSNR,orig,comp,decomp
         
     
-
     def mseCalc(original,decompressed):
-        return (1/(original.shape[0] * original.shape[1]))*((original - decompressed)**2).sum()
-
-        pass
+        return (1/(original.shape[0] * original.shape[1] * original.shape[2]))*((original - decompressed)**2).sum()
     def psnrCalc(original,decompressed):
         return 10 * log10((255*255)/OutputController.mseCalc(original,decompressed))
-    
     def plotter(arr):
-        
-        plt.plot(arr, np.arange(1, 5), 'bo')
+        plt.plot( np.arange(1, 5),arr, 'bo')
         plt.savefig("PSNR_With_Time.png")
